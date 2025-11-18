@@ -172,7 +172,6 @@ if #lspservers_ensure_installed > 0 then
             documentation = { auto_show = true, auto_show_delay_ms = 500 },
             menu = {
                 auto_show = true,
-                auto_show_delay_ms = 900,
                 draw = {
                     treesitter = { "lsp" },
                     columns = {
