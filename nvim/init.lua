@@ -29,8 +29,10 @@ vim.opt.belloff = "all"
 vim.opt.winborder = "rounded"
 vim.g.netrw_banner = 0
 vim.g.netrw_liststyle = 1
-
+vim.opt.guicursor = "n-v-i-c:block-Cursor"
+vim.opt.grepprg = "rg --vimgrep"
 vim.g.mapleader = " "
+
 vim.keymap.set({ "n", "v", "x" }, "<leader>y", '"+y')
 vim.keymap.set("n", "<leader>p", '"+p')
 vim.keymap.set("n", "<leader>P", '"+P')
@@ -65,14 +67,16 @@ local themes = {
         require("gruvbox").setup(opt)
         vim.cmd("colorscheme gruvbox")
     end,
-    black_metal = function(opt)
-        vim.pack.add({ "https://github.com/metalelf0/black-metal-theme-neovim" })
-        require("black-metal").setup(opt)
-        require("black-metal").load()
+    kanagawa_paper = function(opt)
+        vim.pack.add({ "https://github.com/thesimonho/kanagawa-paper.nvim" })
+        require("kanagawa-paper").setup(opt)
+        vim.cmd("colorscheme kanagawa-paper")
     end
 }
 
-themes.ashki( { colors = { void = "#000000" } } )
+-- themes.ashki({ soft = 1 })
+-- themes.vague()
+themes.kanagawa_paper()
 
 local treesitter_ensure_installed = {
     "c",
@@ -97,7 +101,9 @@ local lspservers_ensure_installed = {
     "eslint",
     "pyright",
     "rust_analyzer",
-    "gopls"
+    "gopls",
+    "jsonls",
+    "clangd",
 }
 
 vim.api.nvim_create_autocmd("PackChanged", {
@@ -158,7 +164,6 @@ if #lspservers_ensure_installed > 0 then
     })
 
     require("blink.cmp").setup({
-        debug = true,
         keymap = {
             preset = "default",
             ["<C-space>"] = {},
