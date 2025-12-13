@@ -50,7 +50,7 @@ vim.keymap.set("t", "<esc><esc>", "<C-\\><C-n>", { buffer = true })
 if vim.fn.executable("rg") then
     vim.api.nvim_create_user_command("Rg", function(opts)
         if opts.args == "" then return end
-        local results = vim.fn.systemlist({ "rg", "--vimgrep", opts.args })
+        local results = vim.fn.systemlist("rg --vimgrep " .. opts.args)
         if vim.v.shell_error ~= 0 then
             vim.api.nvim_err_writeln("Rg error: " .. table.concat(results, "\n"))
             return
@@ -67,7 +67,7 @@ end
 if vim.fn.executable("fd") then
     vim.api.nvim_create_user_command("Fd", function(opts)
         if opts.args == "" then return end
-        local results = vim.fn.systemlist({ "fd", opts.args })
+        local results = vim.fn.systemlist("fd " .. opts.args)
         if vim.v.shell_error ~= 0 then
             vim.api.nvim_err_writeln("Fg error: " .. table.concat(results, "\n"))
             return
