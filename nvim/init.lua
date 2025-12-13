@@ -30,33 +30,72 @@ vim.opt.winborder = "rounded"
 vim.g.netrw_banner = 0
 vim.g.netrw_liststyle = 1
 vim.opt.guicursor = "n-v-i-c:block-Cursor"
-vim.opt.grepprg = "rg --vimgrep"
-vim.g.mapleader = " "
 
+vim.g.mapleader = " "
 vim.keymap.set({ "n", "v", "x" }, "<leader>y", '"+y')
-vim.keymap.set("n", "<leader>p", '"+p')
-vim.keymap.set("n", "<leader>P", '"+P')
+vim.keymap.set({ "n", "v", "x" }, "<leader>p", '"+p')
+vim.keymap.set({ "n", "v", "x" }, "<leader>P", '"+P')
 vim.keymap.set("n", "<leader>q", ":quit<CR>")
 vim.keymap.set("n", "<leader>w", ":write<CR>")
 vim.keymap.set("n", "<leader>E", ":edit .<CR>")
 vim.keymap.set("n", "<leader>e", ":edit %:h<CR>")
 vim.keymap.set("n", "<leader>r", ":edit #<CR>")
+vim.keymap.set("n", "<leader>o", ":copen<CR>")
 vim.keymap.set("n", "<leader>t", ":tabnew | terminal<CR>")
-vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
-vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
-vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { desc = "Format entire buffer" })
-vim.api.nvim_create_autocmd("TermOpen", {
-    pattern = "*",
-    callback = function()
-        vim.keymap.set("t", "<esc><esc>", "<C-\\><C-n>", { buffer = true })
-    end,
-})
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
+vim.keymap.set("n", "<leader>F", vim.lsp.buf.format)
+vim.keymap.set("t", "<esc><esc>", "<C-\\><C-n>", { buffer = true })
+
+if vim.fn.executable("rg") then
+    vim.api.nvim_create_user_command("Rg", function(opts)
+        if opts.args == "" then return end
+        local results = vim.fn.systemlist({ "rg", "--vimgrep", opts.args })
+        if vim.v.shell_error ~= 0 then
+            vim.api.nvim_err_writeln("Rg error: " .. table.concat(results, "\n"))
+            return
+        end
+        if #results == 0 then return end
+        vim.fn.setqflist({}, " ", {
+            items = vim.fn.getqflist({ lines = results, efm = "%f:%l:%c:%m" }).items,
+            title = "Rg: " .. opts.args,
+        })
+        vim.cmd("copen")
+    end, { nargs = "*", complete = "file" })
+    vim.keymap.set("n", "<leader>g", ":Rg ", { noremap = true, silent = false })
+end
+if vim.fn.executable("fd") then
+    vim.api.nvim_create_user_command("Fd", function(opts)
+        if opts.args == "" then return end
+        local results = vim.fn.systemlist({ "fd", opts.args })
+        if vim.v.shell_error ~= 0 then
+            vim.api.nvim_err_writeln("Fg error: " .. table.concat(results, "\n"))
+            return
+        end
+        if #results == 0 then return end
+        local formatted = {}
+        for _, line in ipairs(results) do
+            formatted[#formatted + 1] = line .. ":1"
+        end
+        vim.fn.setqflist({}, " ", {
+            items = vim.fn.getqflist({ lines = formatted, efm = "%f:%l" }).items,
+            title = "Fd: " .. opts.args,
+        })
+        vim.cmd("copen")
+    end, { nargs = "*", complete = "file" })
+    vim.keymap.set("n", "<leader>f", ":Fd ", { noremap = true, silent = false })
+end
 
 local themes = {
     ashki = function(opt)
         vim.pack.add({ "https://github.com/nlkli/ashki.nvim" })
         require("ashki").setup(opt)
         vim.cmd("colorscheme ashki")
+    end,
+    gruber = function(opt)
+        vim.pack.add({ "https://github.com/blazkowolf/gruber-darker.nvim" })
+        require("gruber-darker").setup(opt)
+        vim.cmd("colorscheme gruber-darker")
     end,
     vague = function(opt)
         vim.pack.add({ "https://github.com/vague-theme/vague.nvim" })
@@ -73,19 +112,12 @@ local themes = {
         require("kanagawa-paper").setup(opt)
         vim.cmd("colorscheme kanagawa-paper")
     end,
-    vim_boring = function(opt)
-        vim.pack.add({ "https://github.com/t184256/vim-boring" })
-        require("vim-boring").setup(opt)
-        vim.cmd("colorscheme vim-boring")
-    end
 }
 
-themes.ashki({ soft = 0 })
-
+themes.gruber()
+-- themes.ashki({ soft = 0 })
 -- themes.vague()
 -- themes.kanagawa_paper()
--- themes.vim_boring()
--- vim.cmd("colorscheme darkblue");
 
 local treesitter_ensure_installed = {
     "c",
