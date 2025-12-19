@@ -32,15 +32,17 @@ vim.g.netrw_liststyle = 1
 vim.opt.guicursor = "n-v-i-c:block-Cursor"
 
 vim.g.mapleader = " "
-vim.keymap.set({ "n", "v", "x" }, "<leader>y", '"+y')
-vim.keymap.set({ "n", "v", "x" }, "<leader>p", '"+p')
-vim.keymap.set({ "n", "v", "x" }, "<leader>P", '"+P')
-vim.keymap.set("n", "<leader>q", ":quit<CR>")
-vim.keymap.set("n", "<leader>w", ":write<CR>")
-vim.keymap.set("n", "<leader>E", ":edit .<CR>")
+vim.keymap.set({ "n", "x" }, "<leader>y", '"+y')
+vim.keymap.set({ "n", "x" }, "<leader>p", '"+p')
+vim.keymap.set({ "n", "x" }, "<leader>P", '"+P')
+vim.keymap.set("n", "<leader>q", ":x<CR>")
+vim.keymap.set("n", "<leader>w", ":update<CR>")
 vim.keymap.set("n", "<leader>e", ":edit %:h<CR>")
+vim.keymap.set("n", "<leader>E", ":edit .<CR>")
 vim.keymap.set("n", "<leader>r", ":edit #<CR>")
-vim.keymap.set("n", "<leader>u", ":update<CR>:source ~/.config/nvim/init.lua<CR>")
+vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>//g<Left><Left>]])
+vim.keymap.set("x", "<leader>s", [[y:%s/<C-r>"//g<Left><Left>]])
+vim.keymap.set("n", "<leader>u", ":source ~/.config/nvim/init.lua<CR>")
 vim.keymap.set("n", "<leader>o", ":copen<CR>")
 vim.keymap.set("n", "<leader>c", ":cclose<CR>")
 vim.keymap.set("n", "<leader>t", ":tabnew | terminal<CR>")
@@ -229,34 +231,34 @@ local function themeSyncExe()
     if vim.fn.has("syntax_on") then vim.cmd("syntax reset") end
 
     local P = {
-        black   = { base = "#2f3239",   bright = "#4e5157",   dim = "#282a30" },
-        red     = { base = "#e85c51",     bright = "#eb746b",     dim = "#c54e45" },
-        green   = { base = "#7aa4a1",   bright = "#8eb2af",   dim = "#688b89" },
-        yellow  = { base = "#fda47f",  bright = "#fdb292",  dim = "#d78b6c" },
-        blue    = { base = "#5a93aa",    bright = "#73a3b7",    dim = "#4d7d90" },
-        magenta = { base = "#ad5c7c", bright = "#b97490", dim = "#934e69" },
-        cyan    = { base = "#a1cdd8",    bright = "#afd4de",    dim = "#89aeb8" },
-        white   = { base = "#ebebeb",   bright = "#eeeeee",   dim = "#c8c8c8" },
-        orange  = { base = "#ff8349",  bright = "#ff9664",  dim = "#d96f3e" },
-        pink    = { base = "#cb7985",    bright = "#d38d97",    dim = "#ad6771" },
-        comment = "#6d7f8b",
-        status_line = "#0f1c1e",
-        bg0     = "#0f1c1e", -- Dark bg (status line and float)
-        bg1     = "#152528", -- Default bg
-        bg2     = "#1d3337", -- Lighter bg (colorcolm folds)
-        bg3     = "#254147", -- Lighter bg (cursor line)
-        bg4     = "#2d4f56", -- Conceal, border fg
-        fg0     = "#eaeeee", -- Lighter fg
-        fg1     = "#e6eaea", -- Default fg
-        fg2     = "#cbd9d8", -- Darker fg (status line)
-        fg3     = "#587b7b", -- Darker fg (line numbers, fold colums)
-        sel0    = "#293e40", -- Popup bg, visual selection bg
-        sel1    = "#425e5e", -- Popup sel bg, search bg
+        black   = { base = "#101010",   bright = "#7e7e7e",   dim = "#0c0c0c" },
+        red     = { base = "#f5a191",     bright = "#ff8080",     dim = "#c18478" },
+        green   = { base = "#90b99f",   bright = "#99ffe4",   dim = "#6f8f7b" },
+        yellow  = { base = "#e6b99d",  bright = "#ffc799",  dim = "#b89476" },
+        blue    = { base = "#aca1cf",    bright = "#b9aeda",    dim = "#857da3" },
+        magenta = { base = "#e29eca", bright = "#ecaad6", dim = "#b97fa7" },
+        cyan    = { base = "#ea83a5",    bright = "#f591b2",    dim = "#b5667f" },
+        white   = { base = "#a0a0a0",   bright = "#ffffff",   dim = "#6f6f6f" },
+        orange  = { base = "#e6b99d",  bright = "#ffc799",  dim = "#b89476" },
+        pink    = { base = "#e29eca",    bright = "#ecaad6",    dim = "#b97fa7" },
+        comment = "#6f6f6f",
+        status_line = "#0c0c0c",
+        bg0     = "#0c0c0c", -- Dark bg (status line and float)
+        bg1     = "#101010", -- Default bg
+        bg2     = "#141414", -- Lighter bg (colorcolm folds)
+        bg3     = "#181818", -- Lighter bg (cursor line)
+        bg4     = "#2a2a2a", -- Conceal, border fg
+        fg0     = "#d0d0d0", -- Lighter fg
+        fg1     = "#ffffff", -- Default fg
+        fg2     = "#b0b0b0", -- Darker fg (status line)
+        fg3     = "#6f6f6f", -- Darker fg (line numbers, fold colums)
+        sel0    = "#1f1f1f", -- Popup bg, visual selection bg
+        sel1    = "#2a2a2a", -- Popup sel bg, search bg
         diff = {
-            add = "#293e40",
-            delete = "#4a3332",
-            change = "#233b42",
-            text = "#466066",
+            add = "#2a322d",
+            delete = "#3e2d2a",
+            change = "#2f2d36",
+            text = "#51333d",
         }
     }
 
@@ -296,7 +298,7 @@ local function themeSyncExe()
         statement   = P.magenta.base,  -- Statements
         string      = P.green.base,    -- Strings
         type        = P.yellow.base,   -- Types
-        variable    = "#ebebeb",    -- Variables
+        variable    = "#ffffff",    -- Variables
     }
     local trans = false
     local inactive = false
@@ -379,7 +381,6 @@ local function themeSyncExe()
         WinBar       = { fg = P.fg3, bg = trans and "NONE" or P.bg1, style = "bold" },                       -- Window bar of current window.
         WinBarNC     = { fg = P.fg3, bg = trans and "NONE" or inactive and P.bg0 or P.bg1, style = "bold" }, --Window bar of not-current windows.
 
-
         Comment        = { fg = syn.comment, style = stl.comments },         -- any comment
         Constant       = { fg = syn.const, style = stl.constants },          -- (preferred) any constant
         String         = { fg = syn.string, style = stl.strings },           -- a string constant: "this is a string"
@@ -427,7 +428,6 @@ local function themeSyncExe()
         diffLine       = { fg = syn.builtin2 }, -- Line information ("@@ -169,6 +169,9 @@")
         diffIndexLine  = { fg = syn.preproc },  -- Index line of diff ("index bf3763d..94f0f62 100644")
 
-
         DiagnosticError          = { fg = spec.diag.error },
         DiagnosticWarn           = { fg = spec.diag.warn },
         DiagnosticInfo           = { fg = spec.diag.info },
@@ -443,7 +443,6 @@ local function themeSyncExe()
         DiagnosticUnderlineInfo  = { style = "undercurl", sp = spec.diag.info },
         DiagnosticUnderlineHint  = { style = "undercurl", sp = spec.diag.hint },
         DiagnosticUnderlineOk    = { style = "undercurl", sp = spec.diag.ok },
-
 
         ["@variable"] = { fg = syn.variable, style = stl.variables },             -- various variable names
         ["@variable.builtin"] = { fg = syn.builtin0, style = stl.variables },     -- built-in variable names (e.g. `this`)
@@ -517,7 +516,6 @@ local function themeSyncExe()
         ["@constructor.lua"] = { fg = P.fg2 },                                    -- Lua's constructor is { }
         ["@field.rust"] = { fg = P.fg2 },
         ["@variable.member.yaml"] = { fg = syn.func },                            -- For fields.
-
 
         ["@lsp.type.boolean"] = { link = "@boolean" },
         ["@lsp.type.builtinType"] = { link = "@type.builtin" },
